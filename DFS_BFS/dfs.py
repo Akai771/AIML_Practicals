@@ -9,10 +9,10 @@ def dfs(graph, start):
         node = stack.pop()
         print(node, end=" ")
 
-        for neighbour in graph[node]:
-            if neighbour not in visited:
-                stack.append(neighbour)
-                visited.add(neighbour)
+        for i in graph[node]:
+            if i not in visited:
+                stack.append(i)
+                visited.add(i)
 
 graph = {i: [] for i in range(4)}
 add_edge(graph, 0, 1)

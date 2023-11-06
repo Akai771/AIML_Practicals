@@ -9,10 +9,10 @@ def bfs(graph, start):
         node = queue.pop(0)
         print(node, end=" ")
 
-        for neighbour in graph[node]:
-            if neighbour not in visited:
-                queue.append(neighbour)
-                visited.add(neighbour)
+        for i in graph[node]:
+            if i not in visited:
+                queue.append(i)
+                visited.add(i)
 
 graph = {i: [] for i in range(4)}
 add_edge(graph, 0, 1)
