@@ -1,14 +1,18 @@
-import matplotlib.pyplot as plt
-from scipy import stats
+import math
 
-x=[5,7,8,7,2,17,2,9,4,11,12,9,6]
-y=[99,86,87,88,111,86,103,87,94,78,77,85,86]
+def minMax(curDepth, nodeIndex, maxTurn, scores, targetDepth):
+    if(curDepth == targetDepth):
+        return scores[nodeIndex]
+    
+    if (maxTurn):
+        return max (minMax(curDepth + 1, nodeIndex * 2, False, scores, targetDepth),
+                    minMax(curDepth + 1, nodeIndex * 2 + 1, False, scores, targetDepth))
+    else:
+        return min (minMax(curDepth + 1, nodeIndex * 2, True, scores, targetDepth),
+                    minMax(curDepth + 1, nodeIndex * 2 + 1, True, scores, targetDepth))
+    
+scores = [3,5,2,9,12,5,23,23]
+treeDepth = math.log(len(scores), 2)
 
-slope, intercept, r, p, std_err = stats.linregress(x,y)
-def myFunc(x):
-    return slope * x + intercept
-
-mymodel = list(map(myFunc,x))
-plt.scatter(x,y)
-plt.plot(x, mymodel)
-plt.show()
+print("optimal score : ", end="")
+print(minMax(0,0,True,scores, treeDepth))
