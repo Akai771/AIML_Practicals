@@ -1,33 +1,43 @@
-from collections import defaultdict
+player, opponent = 'x', 'o'
 
-class Graph:
-    def __init__(self):
-        self.graph=defaultdict(list)
+def evaluate(b):
+    lines = [b[0], b[1], b[2], [b[i][j] for i in range(3) for j in range(3) if i==j], [b[i][2-i] for i in range(3)]]
+    for line in lines:
+        if line.count(line[0]) == len(line) and line[0] != '_':
+            return 10 if line[0] == player else -10
+    return 0
 
-    def addEdge(self,u,v):
-        self.graph[u].append(v)
+def minimax(board, depth, isMax):
+    score = evaluate(board)
+    if score in [10, -10] or not any('_' in row for row in board):
+        return score
+    best = -1000 if isMax else 1000
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == '_':
+                board[i][j] = player if isMax else opponent
+                best = max(best, minimax(board, depth + 1, not isMax)) if isMax else min(best, minimax(board, depth + 1, not isMax))
+                board[i][j] = '_'
+    return best
 
-    def BFS(self,s):
-        visited =[False] * (len(self.graph))
-        queue = []
-        queue.append(s)
-        visited[s]=True
-        
-        while queue:
-            s=queue.pop(0)
-            print(s, end=" ")
-            for i in self.graph[s]:
-                if visited[i]==False:
-                    queue.append(i)
-                    visited[i]=True
+def findBestMove(board):
+    bestVal, bestMove = -1000, (-1, -1)
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == '_':
+                board[i][j] = player
+                moveVal = minimax(board, 0, False)
+                board[i][j] = '_'
+                if moveVal > bestVal:
+                    bestMove = (i, j)
+                    bestVal = moveVal
+    return bestMove
 
-g=Graph()
-g.addEdge(0,1)
-g.addEdge(0,2)
-g.addEdge(1,2)
-g.addEdge(2,0)
-g.addEdge(2,3)
-g.addEdge(3,0)
+board = [
+    [ 'x', 'o', 'x' ],
+    [ 'o', '_', 'x' ],
+    [ '_', 'o', '_' ]
+]
 
-print("Following is BFS starting from vertex 2")
-g.BFS(2)
+bestMove = findBestMove(board)
+print(f"The Optimal Move is : ROW: {bestMove[0]} COL: {bestMove[1]}")
